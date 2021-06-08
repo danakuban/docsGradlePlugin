@@ -1,0 +1,19 @@
+@startuml
+
+Entity Book {
+    * id: UUID
+    ----
+    * title: String
+    * publisher: String
+    * year: Int
+}
+
+Entity Author {
+    * id: UUID
+    ----
+    * name: String
+}
+
+Book -> Author
+
+@enduml

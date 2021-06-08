@@ -1,0 +1,19 @@
+@startuml
+
+Entity User {
+    * id: UUID
+    ----
+    * name: String
+}
+
+Entity Address {
+    * id: UUID
+    ----
+    * street: String
+    * zip: String
+    * city: String
+}
+
+User -> Address
+
+@enduml

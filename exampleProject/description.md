@@ -1,0 +1,1 @@
+Example project to demonstrate usage of DocsGradlePlugin

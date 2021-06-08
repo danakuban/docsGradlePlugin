@@ -1,0 +1,1 @@
+Additional information may be included at the end of a module's documentation

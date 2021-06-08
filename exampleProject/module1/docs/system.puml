@@ -1,0 +1,9 @@
+@startuml
+
+frame ExampleProject {
+    component "module1"
+}
+
+'Dependencies
+
+@enduml

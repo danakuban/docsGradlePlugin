@@ -1,0 +1,1 @@
+Another submodule of the example project
