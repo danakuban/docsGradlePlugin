@@ -3,6 +3,10 @@ plugins {
     kotlin("jvm") version "1.4.21"
     id("java-gradle-plugin")
     id("com.gradle.plugin-publish") version "0.15.0"
+
+    // static code analysis
+    id("io.gitlab.arturbosch.detekt") version "1.17.1"
+    id("com.diffplug.spotless") version "5.12.5"
 }
 
 group = "io.github.danakuban.docs-gradle-plugin"
@@ -12,7 +16,6 @@ repositories {
     gradlePluginPortal()
     jcenter()
 }
-
 dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("reflect"))

@@ -21,9 +21,9 @@ annotation class JobDocumentation(val name: String, val description: String)
 data class JobDocumentationEntry(val methodName: String, val name: String, val description: String)
 
 /**
-* Scans all classes for the @EventListener,@Scheduled and @PostConstruct annotation and checks if it's documented with @JobDocumentation.
-* Than it extracts this documentation to the directory "jobannotationprocessor.outputdir"
-*/
+ * Scans all classes for the @EventListener,@Scheduled and @PostConstruct annotation and checks if it's documented with @JobDocumentation.
+ * Than it extracts this documentation to the directory "jobannotationprocessor.outputdir"
+ */
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 @SupportedAnnotationTypes
 @SupportedOptions(JobAnnotationProcessor.JOBS_OUTPUT_DIR)
@@ -46,23 +46,28 @@ class JobAnnotationProcessor : AbstractProcessor() {
         error("Job output directory: $JOBS_OUTPUT_DIR not set")
     }
 
-    private val supportedTypes = setOf(PostConstruct::class.java.canonicalName,
+    private val supportedTypes = setOf(
+        PostConstruct::class.java.canonicalName,
         EventListener::class.java.canonicalName, JobDocumentation::class.java.canonicalName,
-        Scheduled::class.java.canonicalName)
+        Scheduled::class.java.canonicalName
+    )
 
 
     override fun getSupportedAnnotationTypes(): Set<String> = supportedTypes
 
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
         val jobs = roundEnv.getElementsAnnotatedWithAny(
-            setOf(EventListener::class.java, PostConstruct::class.java, Scheduled::class.java))
-        val documented = roundEnv.getElementsAnnotatedWith(JobDocumentation::class.java)
+            setOf(EventListener::class.java, PostConstruct::class.java, Scheduled::class.java)
+        )
+        val documented = roundEnv.getElementsAnnotatedWith(JobDocumentation::class.java) ?: emptySet()
 
         checkForUndocumented(jobs, documented)
 
         val newJobDocumentations = documented.map {
-            JobDocumentationEntry(fullMethodName(it), it.getAnnotation(JobDocumentation::class.java).name,
-                it.getAnnotation(JobDocumentation::class.java).description)
+            JobDocumentationEntry(
+                fullMethodName(it), it.getAnnotation(JobDocumentation::class.java).name,
+                it.getAnnotation(JobDocumentation::class.java).description
+            )
         }
         checkForBlankDocumentations(newJobDocumentations)
 
@@ -86,17 +91,18 @@ class JobAnnotationProcessor : AbstractProcessor() {
         jobDocumentations: List<JobDocumentationEntry>) {
         jobDocumentations.filter {
             it.description.isBlank() ||
-                it.name.isBlank()
+                    it.name.isBlank()
         }.forEach {
             processingEnv.messager.printMessage(
                 Diagnostic.Kind.ERROR,
-                "${it.methodName} has a blank JobDocumentation annotation")
+                "${it.methodName} has a blank JobDocumentation annotation"
+            )
             error("undocumented jobs detected")
         }
     }
 
     private fun checkForUndocumented(jobs: Set<Element>,
-                                     documented: Set<Element>) {
+        documented: Set<Element>) {
         val documentedMethods = documented.map { fullMethodName(it) }
         val undocumented = jobs.filter { fullMethodName(it) !in documentedMethods }
         if (undocumented.isNotEmpty()) {
@@ -104,7 +110,8 @@ class JobAnnotationProcessor : AbstractProcessor() {
                 processingEnv.messager.printMessage(
                     Diagnostic.Kind.ERROR,
                     "${it.enclosingElement.simpleName}.${it.simpleName} has @PostConstruct, @Scheduled" +
-                        " or @EventListener annotated but doesn't have a @JobDocumentation please fix")
+                            " or @EventListener annotated but doesn't have a @JobDocumentation please fix"
+                )
                 error("undocumented jobs detected")
             }
         }
