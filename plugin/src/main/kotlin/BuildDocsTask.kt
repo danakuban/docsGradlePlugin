@@ -117,7 +117,7 @@ open class BuildDocsTask : DefaultTask() {
             it.from(project.buildDir.absolutePath + "/docs")
             it.from(project.projectDir.absolutePath + "/docs")
             it.from(systemDescriptionPath)
-            it.include("*")
+            it.include("**")
             it.into(project.rootProject.buildDir.absolutePath + "/docs/system/${name.toLowerCase()}")
         }
         File(project.rootProject.buildDir.absolutePath + "/docs/system/${name.toLowerCase()}/name").writeText(name)
