@@ -60,4 +60,10 @@ pluginBundle {
             tags = mutableListOf("docs", "documentation")
         }
     }
+
+    mavenCoordinates {
+        groupId = "io.github.danakuban"
+        artifactId = "docs-gradle-plugin"
+        version = "1.0.0"
+    }
 }

@@ -50,3 +50,10 @@ __NOTE:__ This Annotation is required for each class marked with @Entity.
 **@JobAnnotation:** Annotate each job with @JobAnnotation to describe it. 
 A list of all jobs and their description will be included in the documentation of the module.\
 __NOTE:__ This Annotation is required for each method marked with @PostConstruct, @EventListener or @Scheduled.
+
+### Endpoints
+
+This plugin locates all kubernetes services deployed by the [mayope deployment plugin](https://github.com/mayope/deployment-plugin) and lists it at the beginning of the module's documentation.
+An endpoint will only be included, if a get request returns the HTTP status OK.
+For each service the endpoint with an additional "/swagger-ui.html" wil be the first guess, if a request fails, the plain endpoint is requested.
+This feature simplifies directly linking your swagger api if you have one.
