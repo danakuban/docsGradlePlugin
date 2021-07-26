@@ -12,7 +12,6 @@ repositories {
     gradlePluginPortal()
     jcenter()
 }
-
 dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("reflect"))

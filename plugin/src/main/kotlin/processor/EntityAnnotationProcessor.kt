@@ -19,9 +19,9 @@ annotation class EntityDocumentation(val name: String, val description: String)
 data class EntityDocumentationEntry(val className: String, val name: String, val description: String)
 
 /**
-* Scans all classes for the @Entity annotation and checks if it's documented and extracts this documentation to
-* the directory "entityannotationprocessor.outputdir"
-*/
+ * Scans all classes for the @Entity annotation and checks if it's documented and extracts this documentation to
+ * the directory "entityannotationprocessor.outputdir"
+ */
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 @SupportedAnnotationTypes
 @SupportedOptions(EntityAnnotationProcessor.ENTITY_OUTPUT_DIR)
@@ -40,7 +40,9 @@ class EntityAnnotationProcessor : AbstractProcessor() {
         processingEnv.options.get(ENTITY_OUTPUT_DIR)?.let {
             return it
         }
-        processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, "Entity output directory: $ENTITY_OUTPUT_DIR not set")
+        processingEnv.messager.printMessage(
+            Diagnostic.Kind.ERROR, "Entity output directory: $ENTITY_OUTPUT_DIR not set"
+        )
         error("Job output directory: $ENTITY_OUTPUT_DIR not set")
     }
 
@@ -51,14 +53,17 @@ class EntityAnnotationProcessor : AbstractProcessor() {
 
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
         val entities = roundEnv.getElementsAnnotatedWithAny(
-            setOf(Entity::class.java))
-        val documented = roundEnv.getElementsAnnotatedWith(EntityDocumentation::class.java)
+            setOf(Entity::class.java)
+        )
+        val documented = roundEnv.getElementsAnnotatedWith(EntityDocumentation::class.java) ?: emptySet()
 
         checkForUndocumented(entities, documented)
 
         val newJobDocumentations = documented.map {
-            EntityDocumentationEntry(fullClassName(it), it.getAnnotation(EntityDocumentation::class.java).name,
-                it.getAnnotation(EntityDocumentation::class.java).description)
+            EntityDocumentationEntry(
+                fullClassName(it), it.getAnnotation(EntityDocumentation::class.java).name,
+                it.getAnnotation(EntityDocumentation::class.java).description
+            )
         }
         checkForBlankDocumentations(newJobDocumentations)
 
@@ -81,11 +86,12 @@ class EntityAnnotationProcessor : AbstractProcessor() {
     private fun checkForBlankDocumentations(jobDocumentations: List<EntityDocumentationEntry>) {
         jobDocumentations.filter {
             it.description.isBlank() ||
-                it.name.isBlank()
+                    it.name.isBlank()
         }.forEach {
             processingEnv.messager.printMessage(
                 Diagnostic.Kind.ERROR,
-                "${it.className} has a blank EntityDocumentation annotation")
+                "${it.className} has a blank EntityDocumentation annotation"
+            )
             error("undocumented entities detected")
         }
     }
@@ -98,7 +104,8 @@ class EntityAnnotationProcessor : AbstractProcessor() {
                 processingEnv.messager.printMessage(
                     Diagnostic.Kind.ERROR,
                     "${fullClassName(it)} has @Entity" +
-                        " annotated but doesn't have a @EntityDocumentation please fix")
+                            " annotated but doesn't have a @EntityDocumentation please fix"
+                )
                 error("undocumented jobs detected")
             }
         }
