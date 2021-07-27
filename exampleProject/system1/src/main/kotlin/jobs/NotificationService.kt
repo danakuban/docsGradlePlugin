@@ -1,4 +1,4 @@
-package io.github.danakuban.docsGradlePlugin.exampleProject.module1.jobs
+package io.github.danakuban.docsGradlePlugin.exampleProject.system1.jobs
 
 import io.github.danakuban.docsgradleplugin.processor.JobDocumentation
 import org.slf4j.LoggerFactory

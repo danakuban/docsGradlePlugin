@@ -39,7 +39,7 @@ class JobAnnotationProcessor : AbstractProcessor() {
     override fun getSupportedOptions() = setOf(JOBS_OUTPUT_DIR)
 
     private fun outputDir(): String {
-        processingEnv.options.get(JOBS_OUTPUT_DIR)?.let {
+        processingEnv.options[JOBS_OUTPUT_DIR]?.let {
             return it
         }
         processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, "Job output directory: $JOBS_OUTPUT_DIR not set")

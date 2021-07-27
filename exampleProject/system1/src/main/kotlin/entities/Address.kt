@@ -1,4 +1,4 @@
-package io.github.danakuban.docsGradlePlugin.exampleProject.module1.entities
+package io.github.danakuban.docsGradlePlugin.exampleProject.system1.entities
 
 import io.github.danakuban.docsgradleplugin.processor.EntityDocumentation
 import java.util.UUID

@@ -1,4 +1,4 @@
-package io.github.danakuban.docsGradlePlugin.exampleProject.module2
+package io.github.danakuban.docsGradlePlugin.exampleProject.system2
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.domain.EntityScan

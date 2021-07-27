@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "io.github.danakuban.docs-gradle-plugin"
-version = "1.0.0"
+version = "1.0.3"
 
 repositories {
     gradlePluginPortal()
@@ -64,6 +64,6 @@ pluginBundle {
     mavenCoordinates {
         groupId = "io.github.danakuban"
         artifactId = "docs-gradle-plugin"
-        version = "1.0.0"
+        version = "1.0.3"
     }
 }

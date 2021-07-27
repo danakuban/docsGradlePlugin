@@ -2,5 +2,5 @@ rootProject.name = "exampleProject"
 
 includeBuild("../plugin")
 
-include("module1")
-include("module2")
+include("system1")
+include("system2", "system2:moduleA")
