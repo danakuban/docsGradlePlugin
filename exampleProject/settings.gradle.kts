@@ -1,6 +1,6 @@
 rootProject.name = "exampleProject"
 
-includeBuild("../plugin")
+//includeBuild("../plugin")
 
 include("system1")
 include("system2", "system2:moduleA")

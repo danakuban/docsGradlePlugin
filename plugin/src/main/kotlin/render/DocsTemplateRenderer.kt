@@ -45,7 +45,7 @@ internal class DocsTemplateRenderer(private val project: Project, private val sy
 
     private fun insertErm(): String {
         val entities = loadFileContent(projectEntitiesFile(project))
-        if (!projectErmFile().exists()) {
+        if (!projectErmFile().exists() && entities.isNotBlank()) {
             return "## Entities\n\n$entities\n\n"
         }
         return "## Entities\n![erm](erm.png)\n\n$entities\n\n"
@@ -54,10 +54,6 @@ internal class DocsTemplateRenderer(private val project: Project, private val sy
     private fun renderJobs(): String {
         return loadFileContent(projectJobsFile(project), "## Jobs\n\n") + "\n\n"
     }
-
-    private fun projectJobs(it: Project) = loadFileContent(projectJobsFile(it), "\n\nJobs:\n")
-
-    private fun projectEntities(it: Project) = loadFileContent(projectEntitiesFile(it), "\n\nEntities:\n")
 
     private fun footer() = loadFileContent(footerFile())
 
