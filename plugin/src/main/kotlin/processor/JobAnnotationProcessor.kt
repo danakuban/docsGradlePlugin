@@ -79,7 +79,7 @@ class JobAnnotationProcessor : AbstractProcessor() {
         }
 
         if (roundEnv.processingOver()) {
-            jobDocumentations.joinToString("\n") { "- ${it.name}: ${it.description}" }.let {
+            jobDocumentations.joinToString("\n") { "* ${it.name}: ${it.description}" }.let {
                 File(outputDir!!.absolutePath + "/jobs.md").writeText(it)
             }
         }

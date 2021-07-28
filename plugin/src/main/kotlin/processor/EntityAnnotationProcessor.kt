@@ -37,7 +37,7 @@ class EntityAnnotationProcessor : AbstractProcessor() {
     override fun getSupportedOptions() = setOf(ENTITY_OUTPUT_DIR)
 
     private fun outputDir(): String {
-        processingEnv.options.get(ENTITY_OUTPUT_DIR)?.let {
+        processingEnv.options[ENTITY_OUTPUT_DIR]?.let {
             return it
         }
         processingEnv.messager.printMessage(
@@ -59,15 +59,15 @@ class EntityAnnotationProcessor : AbstractProcessor() {
 
         checkForUndocumented(entities, documented)
 
-        val newJobDocumentations = documented.map {
+        val newEntityDocumentations = documented.map {
             EntityDocumentationEntry(
                 fullClassName(it), it.getAnnotation(EntityDocumentation::class.java).name,
                 it.getAnnotation(EntityDocumentation::class.java).description
             )
         }
-        checkForBlankDocumentations(newJobDocumentations)
+        checkForBlankDocumentations(newEntityDocumentations)
 
-        entityDocumentations.addAll(newJobDocumentations)
+        entityDocumentations.addAll(newEntityDocumentations)
 
         if (outputDir == null) {
             outputDir = File(outputDir())
@@ -75,7 +75,7 @@ class EntityAnnotationProcessor : AbstractProcessor() {
         }
 
         if (roundEnv.processingOver()) {
-            entityDocumentations.joinToString("\n") { "- ${it.name}: ${it.description}" }.let {
+            entityDocumentations.joinToString("\n") { "* ${it.name}: ${it.description}" }.let {
                 File(outputDir!!.absolutePath + "/entities.md").writeText(it)
             }
         }
@@ -83,8 +83,8 @@ class EntityAnnotationProcessor : AbstractProcessor() {
         return false
     }
 
-    private fun checkForBlankDocumentations(jobDocumentations: List<EntityDocumentationEntry>) {
-        jobDocumentations.filter {
+    private fun checkForBlankDocumentations(entityDocumentations: List<EntityDocumentationEntry>) {
+        entityDocumentations.filter {
             it.description.isBlank() ||
                     it.name.isBlank()
         }.forEach {
@@ -96,9 +96,9 @@ class EntityAnnotationProcessor : AbstractProcessor() {
         }
     }
 
-    private fun checkForUndocumented(jobs: Set<Element>, documented: Set<Element>) {
+    private fun checkForUndocumented(entities: Set<Element>, documented: Set<Element>) {
         val documentedMethods = documented.map { fullClassName(it) }
-        val undocumented = jobs.filter { fullClassName(it) !in documentedMethods }
+        val undocumented = entities.filter { fullClassName(it) !in documentedMethods }
         if (undocumented.isNotEmpty()) {
             undocumented.forEach {
                 processingEnv.messager.printMessage(
@@ -106,7 +106,7 @@ class EntityAnnotationProcessor : AbstractProcessor() {
                     "${fullClassName(it)} has @Entity" +
                             " annotated but doesn't have a @EntityDocumentation please fix"
                 )
-                error("undocumented jobs detected")
+                error("undocumented entities detected")
             }
         }
     }
