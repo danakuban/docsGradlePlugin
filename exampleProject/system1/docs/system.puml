@@ -2,8 +2,10 @@
 
 frame ExampleProject {
     component "module1"
+    queue something
 }
 
 'Dependencies
+module1 --> something
 
 @enduml

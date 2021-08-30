@@ -44,10 +44,8 @@ internal class DocsTemplateRenderer(private val project: Project, private val sy
     private fun hasDocsPlugin(subModule: Project) = subModule.plugins.hasPlugin(DocsPlugin::class.java)
 
     private fun insertErm(): String {
-        val entities = loadFileContent(projectEntitiesFile(project)) +
-            project.subprojects.filter { it.parent == project }
-                .filter { !hasDocsPlugin(it) }
-                .joinToString { loadFileContent(projectEntitiesFile(it)) }
+        val entities = (listOf(project) + project.subprojects.filter { it.parent == project && !hasDocsPlugin(it) })
+            .joinToString("\n"){ loadFileContent(projectEntitiesFile(it)) }
         if (!projectErmFile().exists() && entities.isNotBlank()) {
             return "## Entities\n\n$entities\n\n"
         } else if (!projectErmFile().exists()) {
@@ -57,7 +55,16 @@ internal class DocsTemplateRenderer(private val project: Project, private val sy
     }
 
     private fun renderJobs(): String {
-        return loadFileContent(projectJobsFile(project), "## Jobs\n\n") + "\n\n"
+        val jobs = loadFileContent(projectJobsFile(project)) + "\n" +
+            project.subprojects.filter { it.parent == project }
+                .filter { !hasDocsPlugin(it) }
+                .joinToString { loadFileContent(projectJobsFile(it)) }
+
+        return if (jobs.isNotEmpty()) {
+            "## Jobs\n\n$jobs"
+        } else {
+            "\n\n"
+        }
     }
 
     private fun footer() = loadFileContent(footerFile())

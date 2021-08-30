@@ -7,6 +7,11 @@ plugins {
     kotlin("plugin.spring")
 }
 
+group = "exampleProject.system2"
+subprojects {
+    group = "exampleProject.system2"
+}
+
 repositories {
     gradlePluginPortal()
     mavenCentral()
@@ -25,6 +30,6 @@ dependencies {
     implementation("io.github.danakuban.docs-gradle-plugin:plugin:1.0.0-SNAPSHOT")
 }
 
-tasks.named("build") {
-    dependsOn(gradle.includedBuild("plugin").task(":build"))
+tasks.named("bootJar") {
+    enabled = false
 }

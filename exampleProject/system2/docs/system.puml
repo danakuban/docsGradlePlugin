@@ -1,9 +1,11 @@
 @startuml
 
 frame ExampleProject {
-    component "module2"
+    component module2
 }
 
+'Dependencies
+module2 --> module1
 'Dependencies
 module2 --> module1
 

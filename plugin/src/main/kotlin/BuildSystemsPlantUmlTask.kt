@@ -45,9 +45,13 @@ fun renderPumlsTogether(pumls: List<File>, outputFile: File) {
         systemsViews.forEach {
             append(it.system)
         }
-        systemsViews.forEach {
-            append(it.dependencies)
-        }
+        appendln("'Dependencies")
+        val dependencies = systemsViews.map { it.dependencies }
+            .flatMap { it.split("\n") }
+            .filterNot { it.isBlank() }
+            .distinct()
+            .joinToString("\n")
+        append(dependencies)
         appendln("@enduml")
         toString()
     }
@@ -57,18 +61,10 @@ fun renderPumlsTogether(pumls: List<File>, outputFile: File) {
 }
 
 private fun extractView(contentFile: File): PumlSystemView {
-    contentFile.readText().let {
-        removeHeaderAndFooter(it)
+    removeHeaderAndFooter(contentFile.readText()).let {
+        val parts = it.split("'Dependencies")
+        return PumlSystemView(parts.getOrElse(0) { "" }, parts.getOrElse(1) { "" })
     }
-        .let {
-            if ("'Dependencies" !in it) {
-                error("No section \"'Dependencies\" found in ${contentFile.absolutePath}")
-            }
-            val (system, dependencies) = it.split("'Dependencies")
-            return PumlSystemView(system, dependencies)
-        }
-
-
 }
 
 private fun removeHeaderAndFooter(content: String) = content

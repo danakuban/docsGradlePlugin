@@ -6,14 +6,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 
-/**
- * Plugin to automate the documentation of a system in the Alsterfleet project
- * Every project this plugin is applied to will generate a system-docs entry in the Alsterfleet documentation.
- * You need to create a "description.md" in the project and in every submodule describing what it does.
- * Furthermore you need to document every @Entity with @EntityDocumentation and
- * every @Scheduled/@PostConstruct/@EventListener with a @JobDocumentation.
- * You also need to create a "./docs/system.puml" Plantuml file describing the system you want to document.
- */
 class DocsPlugin : Plugin<Project> {
     override fun apply(project: Project) {
 
@@ -48,7 +40,7 @@ class DocsPlugin : Plugin<Project> {
         project.pluginManager.apply("org.jetbrains.kotlin.jvm")
         project.pluginManager.apply("org.jetbrains.kotlin.kapt")
         project.configurations.getByName("kapt").dependencies.add(
-            project.dependencies.create("io.github.danakuban:docs-gradle-plugin:1.0.7")
+            project.dependencies.create("io.github.danakuban:docs-gradle-plugin:1.1.4")
         )
 
         project.pluginManager.withPlugin("org.jetbrains.kotlin.kapt") {

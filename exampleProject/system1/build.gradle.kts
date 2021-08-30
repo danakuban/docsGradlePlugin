@@ -5,7 +5,7 @@ plugins {
     id("org.springframework.boot") version "2.4.4"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 
-    kotlin("plugin.spring") version "1.3.50"
+    kotlin("plugin.spring") version "1.4.10"
 }
 
 tasks.named("build") {

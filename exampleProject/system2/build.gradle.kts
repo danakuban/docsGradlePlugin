@@ -8,10 +8,6 @@ plugins {
     kotlin("plugin.spring") version "1.3.50"
 }
 
-tasks.named("build") {
-    dependsOn(gradle.includedBuild("plugin").task(":build"))
-}
-
 tasks.named("bootJar") {
     enabled = false
 }

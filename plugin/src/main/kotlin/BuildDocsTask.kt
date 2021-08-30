@@ -1,6 +1,7 @@
 package io.github.danakuban.docsgradleplugin
 
 import io.github.danakuban.docsgradleplugin.render.DocsTemplateRenderer
+import io.github.danakuban.docsgradleplugin.render.renderErmsTogether
 import net.sourceforge.plantuml.SourceStringReader
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -83,17 +84,20 @@ open class BuildDocsTask : DefaultTask() {
 
     private fun renderPumls() {
         if (!File(project.projectDir.absolutePath + "/docs/system.puml").exists()) {
-            renderPumlsFromSubprojects()
+            renderSystemPumlFromSubprojects()
         } else {
-            renderSinglePuml()
+            renderAllPumlFiles()
+            mergeErms()
         }
     }
 
-    private fun renderPumlsFromSubprojects() {
+    private fun renderSystemPumlFromSubprojects() {
         project.subprojects.map {
             File(it.projectDir.absolutePath + "/docs/system.puml")
         }.filter {
             it.exists()
+        }.ifEmpty {
+            return
         }.let {
             renderPumlsTogether(
                 it, File(project.buildDir.absolutePath + "/docs/system.png")
@@ -101,7 +105,19 @@ open class BuildDocsTask : DefaultTask() {
         }
     }
 
-    private fun renderSinglePuml() {
+    private fun mergeErms() {
+        val erms = (listOf(projectErmFile(project)) +
+            project.subprojects.filter { it.parent == project }
+                .filter { !hasDocsPlugin(it) }
+                .map { projectErmFile(it) })
+            .filter { it.exists() }
+        if (erms.isEmpty()) return
+        renderErmsTogether(erms, File(project.buildDir.absolutePath + "/docs/erm.png"))
+    }
+
+    private fun projectErmFile(it: Project) = File(it.projectDir.absolutePath + "/docs/erm.puml")
+
+    private fun renderAllPumlFiles() {
         docsDir().listFiles()?.filter {
             it.name.endsWith(".puml")
         }?.forEach {

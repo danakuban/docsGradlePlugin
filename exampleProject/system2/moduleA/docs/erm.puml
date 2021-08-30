@@ -1,0 +1,8 @@
+@startuml
+
+Entity "Publisher" {
+* id: UUID
+* name: String
+}
+
+@enduml
