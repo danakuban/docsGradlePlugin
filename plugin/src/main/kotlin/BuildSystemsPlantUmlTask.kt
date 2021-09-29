@@ -1,10 +1,10 @@
 package io.github.danakuban.docsgradleplugin
 
-import java.io.File
 import net.sourceforge.plantuml.SourceStringReader
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 data class PumlSystemView(val system: String, val dependencies: String)
 
@@ -31,12 +31,15 @@ open class BuildSystemsPlantUmlTask : DefaultTask() {
         }.filter {
             it.exists()
         }.let {
-            renderPumlsTogether(it, File(project.buildDir.absolutePath + "/plantuml/system.png"))
+            renderPumlsTogether(
+                it, File(project.buildDir.absolutePath + "/plantuml/system.png"),
+                File(project.buildDir.absolutePath + "/plantuml/system.puml")
+            )
         }
     }
 }
 
-fun renderPumlsTogether(pumls: List<File>, outputFile: File) {
+fun renderPumlsTogether(pumls: List<File>, outputFile: File, outputPumlFile: File) {
     val systemsViews = pumls.map {
         extractView(it)
     }
@@ -55,6 +58,8 @@ fun renderPumlsTogether(pumls: List<File>, outputFile: File) {
         appendln("@enduml")
         toString()
     }
+
+    outputPumlFile.writeText(finalPuml)
     val reader = SourceStringReader(finalPuml)
 
     reader.outputImage(outputFile)
