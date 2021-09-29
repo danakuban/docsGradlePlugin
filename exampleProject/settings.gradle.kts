@@ -4,3 +4,4 @@ rootProject.name = "exampleProject"
 
 include("system1")
 include("system2", "system2:moduleA")
+include("docs")

@@ -1,0 +1,16 @@
+baseUrl = "localhost/"
+languageCode = "en-us"
+title = "DocsGradlePlugin"
+theme = "hugo-book"
+pygmentsStyle= "emacs"
+enableGitInfo = true
+
+[params]
+  showShareIcons = false
+  BookMenuBundle = "/menu"
+
+[menu]
+# [[menu.before]]
+
+[markup.goldmark.renderer]
+  unsafe = true
