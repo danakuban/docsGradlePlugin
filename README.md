@@ -62,7 +62,7 @@ This feature simplifies directly linking your swagger api if you have one.
 # Demonstration
 
 If you want to look for a practical example, check out the ExampleProject. 
-It consists of two modules, one with a submodule and demonstrates nearly every aspect of this plugin (except the Endpoint Feature, because it is not deployt in a Kubernetes cluster).
+It consists of two modules, one with a submodule and demonstrates nearly every aspect of this plugin (except the Endpoint Feature, because it is not deployed in a Kubernetes cluster).
 
 ### Integration with Hugo
 
@@ -75,7 +75,7 @@ To see it in action you have to install Hugo, then run
 
 then navigate to the build folder in the ExampleProject and further $buildDir/docs/hugo and run
 
-``` hugo server -D ```
+``` hugo server ```
 
 A Hugo server will start providing a complete website with the documentation, accessible on localhost:1313 (or some other port, it will be stated in the output of the command).
 
