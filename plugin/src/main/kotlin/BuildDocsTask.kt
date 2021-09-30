@@ -100,7 +100,8 @@ open class BuildDocsTask : DefaultTask() {
             return
         }.let {
             renderPumlsTogether(
-                it, File(project.buildDir.absolutePath + "/docs/system.png")
+                it, File(project.buildDir.absolutePath + "/docs/system.png"),
+                File(project.buildDir.absolutePath + "/docs/system.puml")
             )
         }
     }
