@@ -28,7 +28,7 @@ You can add several files to describe a module:
 
 ### Markdown files
 
-**description.md:** You need to place a description.md file in the root of each module. This description is parsed in every module's documentation and the overview of all modules.
+**description.md:** You need to place a description.md file in the root of each module. It must not be empty. This description is parsed in every module's documentation and the overview of all modules.
 
 **footer.md:** For further information of a module you may place a footer.md inside the /docs directory in the module's root.
 This will be appended at the end of the module's documentation

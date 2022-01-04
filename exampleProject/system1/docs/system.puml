@@ -1,11 +1,11 @@
 @startuml
 
 frame ExampleProject {
-    component "module1"
+    component "system1"
     queue something
 }
 
 'Dependencies
-module1 --> something
+system1 --> something
 
 @enduml
