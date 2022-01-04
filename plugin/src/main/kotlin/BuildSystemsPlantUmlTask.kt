@@ -55,6 +55,7 @@ fun renderPumlsTogether(pumls: List<File>, outputFile: File, outputPumlFile: Fil
             .distinct()
             .joinToString("\n")
         append(dependencies)
+        appendln()
         appendln("@enduml")
         toString()
     }

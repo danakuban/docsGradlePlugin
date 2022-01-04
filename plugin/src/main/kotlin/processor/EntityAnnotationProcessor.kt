@@ -12,7 +12,7 @@ import javax.lang.model.element.TypeElement
 import javax.persistence.Entity
 import javax.tools.Diagnostic
 
-@Retention(AnnotationRetention.RUNTIME)
+@Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
 annotation class EntityDocumentation(val name: String, val description: String)
 

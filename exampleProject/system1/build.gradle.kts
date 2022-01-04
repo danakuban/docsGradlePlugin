@@ -38,5 +38,5 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     // docs gradle plugin
-    implementation("io.github.danakuban.docs-gradle-plugin:plugin:1.0.0-SNAPSHOT")
+    implementation("io.github.danakuban.docs-gradle-plugin:plugin:1.1.8")
 }

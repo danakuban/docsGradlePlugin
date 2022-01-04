@@ -11,12 +11,17 @@ import javax.annotation.processing.SupportedOptions
 import javax.annotation.processing.SupportedSourceVersion
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
+import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 
-@Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 annotation class JobDocumentation(val name: String, val description: String)
+
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FUNCTION)
+annotation class SuppressJobDocumentation
 
 data class JobDocumentationEntry(val methodName: String, val name: String, val description: String)
 
@@ -60,8 +65,9 @@ class JobAnnotationProcessor : AbstractProcessor() {
             setOf(EventListener::class.java, PostConstruct::class.java, Scheduled::class.java)
         )
         val documented = roundEnv.getElementsAnnotatedWith(JobDocumentation::class.java) ?: emptySet()
+        val suppressed = roundEnv.getElementsAnnotatedWith(SuppressJobDocumentation::class.java) ?: emptySet()
 
-        checkForUndocumented(jobs, documented)
+        checkForUndocumented(jobs, documented, suppressed)
 
         val newJobDocumentations = documented.map {
             JobDocumentationEntry(
@@ -88,10 +94,11 @@ class JobAnnotationProcessor : AbstractProcessor() {
     }
 
     private fun checkForBlankDocumentations(
-        jobDocumentations: List<JobDocumentationEntry>) {
+        jobDocumentations: List<JobDocumentationEntry>
+    ) {
         jobDocumentations.filter {
             it.description.isBlank() ||
-                    it.name.isBlank()
+                it.name.isBlank()
         }.forEach {
             processingEnv.messager.printMessage(
                 Diagnostic.Kind.ERROR,
@@ -101,16 +108,16 @@ class JobAnnotationProcessor : AbstractProcessor() {
         }
     }
 
-    private fun checkForUndocumented(jobs: Set<Element>,
-        documented: Set<Element>) {
-        val documentedMethods = documented.map { fullMethodName(it) }
+    private fun checkForUndocumented(jobs: Set<Element>, documented: Set<Element>, suppressed: Set<Element>) {
+        val documentedMethods = documented.map { fullMethodName(it) } +
+            suppressed.filter { it.kind == ElementKind.METHOD }.map { fullMethodName(it) }
         val undocumented = jobs.filter { fullMethodName(it) !in documentedMethods }
         if (undocumented.isNotEmpty()) {
             undocumented.forEach {
                 processingEnv.messager.printMessage(
                     Diagnostic.Kind.ERROR,
                     "${it.enclosingElement.simpleName}.${it.simpleName} has @PostConstruct, @Scheduled" +
-                            " or @EventListener annotated but doesn't have a @JobDocumentation please fix"
+                        " or @EventListener annotated but doesn't have a @JobDocumentation please fix"
                 )
                 error("undocumented jobs detected")
             }

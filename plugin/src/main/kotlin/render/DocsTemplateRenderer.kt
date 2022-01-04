@@ -71,8 +71,11 @@ internal class DocsTemplateRenderer(private val project: Project, private val sy
 
     private fun projectDescription(project: Project): String {
         projectDescriptionFile(project).let {
-            if (!it.exists()) {
-                error("Description for project: ${project.path} is missing please add description.md to project")
+            if (!it.exists() || it.readText().isBlank()) {
+                error(
+                    "Description for project: ${project.path} is missing or empty. " +
+                    "Please add description.md to project"
+                )
             }
             return it.readText().trim()
         }

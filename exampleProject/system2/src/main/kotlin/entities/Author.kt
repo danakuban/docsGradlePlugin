@@ -11,5 +11,5 @@ internal class Author(
     @Id
     val id: UUID = UUID.randomUUID(),
 
-    val name: String = "",
+    val name: String = ""
 )
