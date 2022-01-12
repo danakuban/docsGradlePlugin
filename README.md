@@ -81,3 +81,14 @@ A Hugo server will start providing a complete website with the documentation, ac
 
 If you want to create an own Hugo site for your documentation, check out the [Hugo get started guide](https://gohugo.io/getting-started/). 
 The implementation of the tasks in the build.gradle.kts in the docs module in the exampleProject may be of interest as well.
+
+## Additional Notes
+
+### Increase Plantuml Size
+
+If you include big puml files, it may happen that the rendered png is incomplete and truncated.
+To prevent this you may set an environment variable PLANTUML_LIMIT_SIZE=8192 or even higher for bigger files.
+You can set these on your local machine or in gradle.properties with systemProp.PLANTUML_LIMIT_SIZE=8192.
+
+Note that this may result in memory issues, you may fix these configuring the java memory allocation pool (-Xmx).
+Look here for further reference https://plantuml.com/de/faq.
