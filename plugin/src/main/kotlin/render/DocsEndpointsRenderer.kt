@@ -1,5 +1,6 @@
 package io.github.danakuban.docsgradleplugin.render
 
+import io.fabric8.kubernetes.api.model.networking.v1beta1.Ingress
 import io.fabric8.kubernetes.client.DefaultKubernetesClient
 import org.gradle.api.Project
 import org.gradle.internal.impldep.org.apache.http.HttpStatus
@@ -17,21 +18,46 @@ internal class DocsEndpointsRenderer(private val project: Project) {
             project.extensions.findByType(
                 net.mayope.deployplugin.DeployExtension::class.java
             )?.serviceName ?: ""
-        return client.inAnyNamespace().network().ingresses()
-            .withLabels(mapOf("app.kubernetes.io/managed-by" to "Helm", "app.kubernetes.io/instance" to serviceName))
-            .list().items.flatMap {
-                it.spec.rules
-            }.map {
-                toBackendOrFrontend(it.host)
-            }.joinToString(System.lineSeparator()) {
-                "- ${getLinkOpeningInNewTab(it)}"
-            }.let {
-                if (it.isBlank()) {
-                    ""
-                } else {
-                    "## Endpoints\n$it"
-                }
+        return (findHosts(client, serviceName)).map {
+            toBackendOrFrontend(it)
+        }.joinToString(System.lineSeparator()) {
+            "- ${getLinkOpeningInNewTab(it)}"
+        }.let {
+            if (it.isBlank()) {
+                ""
+            } else {
+                "## Endpoints\n$it"
             }
+        }
+    }
+
+    private fun findHosts(client: DefaultKubernetesClient,
+        serviceName: String) =
+        listIngress(client, serviceName).flatMap {
+            it.spec.rules.map { it.host }
+        } + listBetaIngress(client, serviceName).flatMap {
+            it.spec.rules.map { it.host }
+        }
+
+    private fun listBetaIngress(client: DefaultKubernetesClient,
+        serviceName: String): List<Ingress> = try {
+            client.inAnyNamespace().network().apiVersion
+        client.inAnyNamespace().network().v1beta1().ingresses()
+            .withLabels(mapOf("app.kubernetes.io/managed-by" to "Helm", "app.kubernetes.io/instance" to serviceName))
+            .list().items
+    } catch (e: Throwable) {
+        logger.error("Could not fetch ingresses", e)
+        emptyList()
+    }
+
+    private fun listIngress(client: DefaultKubernetesClient,
+        serviceName: String): List<io.fabric8.kubernetes.api.model.networking.v1.Ingress> = try {
+        client.inAnyNamespace().network().v1().ingresses()
+            .withLabels(mapOf("app.kubernetes.io/managed-by" to "Helm", "app.kubernetes.io/instance" to serviceName))
+            .list().items
+    } catch (e: Throwable) {
+        logger.error("Could not fetch ingresses", e)
+        emptyList()
     }
 
     private fun toBackendOrFrontend(host: String) = when (HttpStatus.SC_OK) {

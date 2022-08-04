@@ -20,7 +20,7 @@ dependencies {
 
     implementation("org.postgresql:postgresql:42.2.12")
 
-    implementation("io.fabric8:kubernetes-client:5.2.1")
+    implementation("io.fabric8:kubernetes-client:5.12.3")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
 
